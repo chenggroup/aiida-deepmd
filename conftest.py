@@ -9,8 +9,11 @@ def clear_database_auto(clear_database):  # pylint: disable=unused-argument
     """Automatically clear database in between tests."""
 @pytest.fixture(scope='function')
 def deepmd_code(aiida_local_code_factory):
-    """Get a deepmd code.
+    """Get a deepmd code mock.
     """
-    deepmd_code = aiida_local_code_factory(executable='diff',
-                                           entry_point='deepmd')
-    return deepmd_code
+    import os
+
+    path = os.getcwd()
+    code_path = os.path.join(path, 'mock/dp')
+    code = aiida_local_code_factory(executable=code_path, entry_point='dptrain')
+    return code

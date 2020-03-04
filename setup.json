@@ -18,10 +18,11 @@
             "deepmd = aiida_deepmd.data:DiffParameters"
         ],
         "aiida.calculations": [
-            "deepmd = aiida_deepmd.calculations:DiffCalculation"
+            "dptrain = aiida_deepmd.calculations.dp:DpTrainCalculation",
+            "dpfreeze = aiida_deepmd.calculations.dp:DpFreezeCalculation"
         ],
         "aiida.parsers": [
-            "deepmd = aiida_deepmd.parsers:DiffParser"
+            "dp_base_parser = aiida_deepmd.parsers:DpParser"
         ],
         "aiida.cmdline.data": [
             "deepmd = aiida_deepmd.cli:data_cli"
