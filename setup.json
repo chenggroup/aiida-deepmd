@@ -16,6 +16,7 @@
     "entry_points": {
         "aiida.data": [
             "deepmd = aiida_deepmd.data:DiffParameters"
+            "deepmd.structures = aiida_deepmd.data.structure_set:StructureSet",
         ],
         "aiida.calculations": [
             "dptrain = aiida_deepmd.calculations.dp:DpTrainCalculation",
@@ -26,6 +27,12 @@
         ],
         "aiida.cmdline.data": [
             "deepmd = aiida_deepmd.cli:data_cli"
+        ],
+        "aiida.workflows": [
+            "dp.base = aiida_deepmd.workflows.dp_base_workchain:DpBaseWorkChain",
+            "dp.train = aiida_deepmd.workflows.dp_base_workchain:DpTrainBaseWorkChain",
+            "dp.freeze = aiida_deepmd.workflows.dp_base_workchain:DpFreezeBaseWorkChain",
+            "deepmd.evaluate_base = aiida_deepmd.workflows.evaluate_base:DpEvaluateBaseWorkChain"
         ]
     },
     "include_package_data": true,
