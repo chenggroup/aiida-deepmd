@@ -44,7 +44,7 @@ def test_run(deepmd_code):
     # Note: in order to submit your calculation to the aiida daemon, do:
     # from aiida.engine import submit
     # future = submit(CalculationFactory('deepmd'), **inputs)
-    result = engine.run(CalculationFactory('deepmd'), **inputs)
+    result = engine.run(CalculationFactory('dptrain'), **inputs)
 
     computed_diff = result['deepmd'].get_content()
     print("Computed diff between files: \n{}".format(computed_diff))
