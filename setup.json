@@ -15,8 +15,8 @@
     "version": "0.1.0a0",
     "entry_points": {
         "aiida.data": [
-            "deepmd = aiida_deepmd.data:DiffParameters"
-            "deepmd.structures = aiida_deepmd.data.structure_set:StructureSet",
+            "deepmd = aiida_deepmd.data:DiffParameters",
+            "deepmd.structures = aiida_deepmd.data.structure_set:StructureSet"
         ],
         "aiida.calculations": [
             "dptrain = aiida_deepmd.calculations.dp:DpTrainCalculation",
