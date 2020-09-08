@@ -19,8 +19,7 @@
             "deepmd.structures = aiida_deepmd.data.structure_set:StructureSet"
         ],
         "aiida.calculations": [
-            "dptrain = aiida_deepmd.calculations.dp:DpTrainCalculation",
-            "dpfreeze = aiida_deepmd.calculations.dp:DpFreezeCalculation"
+            "deepmd = aiida_deepmd.calculations.dp:DpCalculation"
         ],
         "aiida.parsers": [
             "dp_base_parser = aiida_deepmd.parsers:DpParser"
