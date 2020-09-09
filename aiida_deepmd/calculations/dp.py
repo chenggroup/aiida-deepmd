@@ -140,7 +140,7 @@ class DpCalculation(CalcJob):
         # create code info for training
         codeinfotrain = CodeInfo()
         codeinfotrain.cmdline_params = ["train", self._DEFAULT_INPUT_FILE]
-        codeinfotrain.stdin_name = self._DEFAULT_INPUT_FILE
+        #codeinfotrain.stdin_name = self._DEFAULT_INPUT_FILE
         codeinfotrain.stdout_name = self._DEFAULT_TRAIN_OUTPUT_FILE
         codeinfotrain.join_files = True
         codeinfotrain.code_uuid = self.inputs.code.uuid
@@ -149,7 +149,7 @@ class DpCalculation(CalcJob):
         # create code info for freeze
         codeinfofreeze = CodeInfo()
         codeinfofreeze.cmdline_params = ["freeze", '-o', self._DEFAULT_FREEZE_OUTPUT_FILE]
-        codeinfofreeze.stdout_name = self._DEFAULT_FREEZE_OUTPUT_FILE
+        #codeinfofreeze.stdout_name = self._DEFAULT_FREEZE_OUTPUT_FILE
         codeinfofreeze.code_uuid = self.inputs.code.uuid
         codeinfofreeze.withmpi = self.inputs.metadata.options.withmpi
 
@@ -161,10 +161,11 @@ class DpCalculation(CalcJob):
         calcinfo.codes_info = [codeinfotrain, codeinfofreeze]
 
         calcinfo.retrieve_list = [
-            # self._DEFAULT_OUTPUT_FILE,
-            # self._DEFAULT_OUTPUT_INFO_FILE,
-            # self._DEFAULT_CHECK_META_FILE,
-            # self._DEFAULT_CHECK_INDEX_FILE,
+            self._DEFAULT_TRAIN_OUTPUT_FILE,
+            self._DEFAULT_FREEZE_OUTPUT_FILE,
+            self._DEFAULT_OUTPUT_INFO_FILE,
+            self._DEFAULT_CHECK_META_FILE,
+            self._DEFAULT_CHECK_INDEX_FILE
         ]
 
         return calcinfo
