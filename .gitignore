@@ -13,3 +13,4 @@ build/
 dist/
 pip-wheel-metadata/
 submit_test
+.idea/

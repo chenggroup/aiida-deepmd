@@ -24,37 +24,23 @@ def test_run(deepmd_code):
     # Prepare input parameters
 #    DiffParameters = DataFactory('deepmd')
 #    parameters = DiffParameters({'ignore-case': True})
-    with open(os.path.join(tests.TEST_DIR, "input_files", "water_se_a.json")) as f:
+    with open(os.path.join("../aiida_deepmd/tests/input_files/", "water_se_a.json")) as f:
         train_param = json.load(f)
-    box = SinglefileData(
-        file=os.path.join(tests.TEST_DIR, "input_files", 'box.npy'))
-    coord = SinglefileData(
-        file=os.path.join(tests.TEST_DIR, "input_files", 'coord.npy'))
-    energy = SinglefileData(
-        file=os.path.join(tests.TEST_DIR, "input_files", 'energy.npy'))
-    force = SinglefileData(
-        file=os.path.join(tests.TEST_DIR, "input_files", 'force.npy'))
-    typeraw = SinglefileData(
-        file=os.path.join(tests.TEST_DIR, "input_files", 'type.raw'))
+
 
     # set up calculation
     inputs = {
         'code': deepmd_code,
-#        'parameters': parameters,
         'model': Dict(dict=train_param["model"]),
         'learning_rate': Dict(dict=train_param["learning_rate"]),
         'loss': Dict(dict=train_param["loss"]),
         'training': Dict(dict=train_param["training"]),
-        'file': {
-            'box': box,
-            'coord': coord,
-            'energy': energy,
-            'force': force,
-            'type_raw': typeraw
-        },
+        'datadirs':["../aiida_deepmd/tests/input_files/train_data/",
+                    "../aiida_deepmd/tests/input_files/train_data2/"],
+#        'datadirs':["/home/xjf/robinzhuang/aiida-deepmd/aiida_deepmd/tests/input_files/train_data/"],
         'metadata': {
             'description': "Test job submission with the aiida_deepmd plugin",
-            'dry_run': True,
+ #           'dry_run': True,
             'options':{
                 'resources': {
                     'tot_num_mpiprocs': 4

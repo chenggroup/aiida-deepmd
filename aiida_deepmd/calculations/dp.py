@@ -12,15 +12,16 @@ import numpy as np
 
 from aiida.engine import CalcJob
 from aiida import orm
+from aiida.orm.nodes.data.singlefile import SinglefileData
 from aiida.common import CalcInfo, CodeInfo, InputValidationError
 
 
 class DpCalculation(CalcJob):
     """
-    This is a DpTrainCalculation, used to prepare input for
-    deepmd dp training.
+    This is a DpCalculation, used to prepare input for
+    deepmd dp training and freeze model.
     It is a combine of train and freeze stage of dp command
-    Users are supposed to get a frozen_model file which can be used for seq calculation
+    User will obtain a freezed model and a list of output
     For information on deepmd, refer to: https://github.com/deepmodeling/deepmd-kit
     """
 
@@ -49,15 +50,17 @@ class DpCalculation(CalcJob):
         spec.input('loss', valid_type=orm.Dict, help='parameters of loss function')
         spec.input('training', valid_type=orm.Dict, help='parameters of training')
 
+        spec.input('datadirs', valid_type=list, help='parameters of datadirs', non_db=True)
+
         # TODO: use folder here not store the data which confilct the provenance
         # a special datatype is need to write the files for training and then uploaded
         # spec.input_namespace('file')
-        spec.input('file.type_raw', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        spec.input('file.box', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        spec.input('file.coord', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        spec.input('file.energy', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        spec.input('file.force', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        spec.input('file.virial', valid_type=orm.SinglefileData, required=False, help='raw or npy data')
+        #spec.input('file.type_raw', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
+        #spec.input('file.box', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
+        #spec.input('file.coord', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
+        #spec.input('file.energy', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
+        #spec.input('file.force', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
+        #spec.input('file.virial', valid_type=orm.SinglefileData, required=False, help='raw or npy data')
         #
         # spec.input_namespace('add_file.type_map_raw', valid_type=orm.SinglefileData, required=False, help='raw data')
         # spec.input_namespace('add_file.type_raw', valid_type=orm.SinglefileData, required=False, help='raw data')
@@ -99,21 +102,54 @@ class DpCalculation(CalcJob):
                 raise InputValidationError("invalid keys or values in input parameters found")
 
         # Create the subfolder that will contain the train data
+        local_copy_list = []
+        for datadir in self.inputs.datadirs:
+            # change to absolute path
+            absdatadir = os.path.abspath(datadir)
+            # create subfolder
+            datadir_basename = os.path.basename(absdatadir)
+            datadir_in_workdir = os.path.join("./", datadir_basename)
+            folder.get_subfolder(datadir_in_workdir, create=True)
+            # this loop use to copy the training data under the datadir
+            for root, directories, files in os.walk(top=absdatadir, topdown=True):
+                relroot = os.path.relpath(root, absdatadir)
+                # create subtree folders
+                for name in directories:
+                    folder.get_subfolder(
+                        os.path.join(
+                            datadir_basename,
+                            relroot,
+                            name),
+                        create=True)
 
-        folder.get_subfolder(self._TRAIN_DATA_SUBFOLDER, create=True)
-        folder.get_subfolder(self._TRAIN_SET_SUBFOLDER, create=True)
+                # give the singlefiledata to file
+                for name in files:
+                    fobj = SinglefileData(
+                        file=os.path.join(root, name)
+                    )
+                    # must save fobj otherwise the node is empty and can't be copied
+                    fobj.store()
+                    dst_path = os.path.join(
+                        datadir_basename,
+                        relroot,
+                        name)
+                    local_copy_list.append((fobj.uuid, fobj.filename, dst_path))
+
+
+
+
+        #folder.get_subfolder(self._TRAIN_SET_SUBFOLDER, create=True)
 
         # remember to copy type map
-        local_copy_list = []
-        for name, obj in self.inputs.file.items():
-            # if type.map, copy to the ./data
-            if name == 'type_raw':
-                dst_path = os.path.join(self._TRAIN_DATA_SUBFOLDER, obj.filename)
-                local_copy_list.append((obj.uuid, obj.filename, dst_path))
-            # copy other files to the ./data/set.000
-            else:
-                dst_path = os.path.join(self._TRAIN_SET_SUBFOLDER, obj.filename)
-                local_copy_list.append((obj.uuid, obj.filename, dst_path))
+#        for name, obj in self.inputs.file.items():
+#            # if type.map, copy to the ./data
+#            if name == 'type_raw':
+#                dst_path = os.path.join(self._TRAIN_DATA_SUBFOLDER, obj.filename)
+#                local_copy_list.append((obj.uuid, obj.filename, dst_path))
+#            # copy other files to the ./data/set.000
+#            else:
+#                dst_path = os.path.join(self._TRAIN_SET_SUBFOLDER, obj.filename)
+#                local_copy_list.append((obj.uuid, obj.filename, dst_path))
 #refactor
 #        def create_array_from_files(files):
 #            for f in files:
