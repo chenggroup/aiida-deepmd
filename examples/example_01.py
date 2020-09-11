@@ -4,10 +4,10 @@
 Usage: ./example_01.py
 """
 import os
-from aiida_deepmd import tests, helpers
+from aiida_deepmd import helpers
 from aiida import cmdline, engine
 from aiida.plugins import DataFactory, CalculationFactory
-from aiida.orm import Dict, SinglefileData
+from aiida.orm import Dict
 import click
 import json
 
@@ -37,10 +37,9 @@ def test_run(deepmd_code):
         'training': Dict(dict=train_param["training"]),
         'datadirs':["../aiida_deepmd/tests/input_files/train_data/",
                     "../aiida_deepmd/tests/input_files/train_data2/"],
-#        'datadirs':["/home/xjf/robinzhuang/aiida-deepmd/aiida_deepmd/tests/input_files/train_data/"],
         'metadata': {
             'description': "Test job submission with the aiida_deepmd plugin",
- #           'dry_run': True,
+            'dry_run': True,
             'options':{
                 'resources': {
                     'tot_num_mpiprocs': 4

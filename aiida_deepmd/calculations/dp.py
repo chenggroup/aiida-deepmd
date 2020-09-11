@@ -52,20 +52,8 @@ class DpCalculation(CalcJob):
 
         spec.input('datadirs', valid_type=list, help='parameters of datadirs', non_db=True)
 
-        # TODO: use folder here not store the data which confilct the provenance
         # a special datatype is need to write the files for training and then uploaded
-        # spec.input_namespace('file')
-        #spec.input('file.type_raw', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        #spec.input('file.box', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        #spec.input('file.coord', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        #spec.input('file.energy', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        #spec.input('file.force', valid_type=orm.SinglefileData, required=True, help='raw or npy data')
-        #spec.input('file.virial', valid_type=orm.SinglefileData, required=False, help='raw or npy data')
-        #
-        # spec.input_namespace('add_file.type_map_raw', valid_type=orm.SinglefileData, required=False, help='raw data')
-        # spec.input_namespace('add_file.type_raw', valid_type=orm.SinglefileData, required=False, help='raw data')
 
-        # inputs.metadata.options.resources = {}
         spec.input('metadata.options.withmpi', valid_type=bool, default=False)
 
         # Exit codes
@@ -84,10 +72,8 @@ class DpCalculation(CalcJob):
         :param folder: an `aiida.common.folders.Folder` to temporarily write files on disk
         :return: `aiida.common.datastructures.CalcInfo` instance
         """
-        # from aiida_deepmd.utils import DpInput
 
         # create json input file
-        # input = DpInput(self.inputs.model.get_dict(), self.inputs.learning_rate.get_dict(), self.inputs.loss.get_dict(), self.inputs.training.get_dict())
         input = dict()
         input['model'] = self.inputs.model.get_dict()
         input['learning_rate'] = self.inputs.learning_rate.get_dict()
@@ -136,39 +122,6 @@ class DpCalculation(CalcJob):
                     local_copy_list.append((fobj.uuid, fobj.filename, dst_path))
 
 
-
-
-        #folder.get_subfolder(self._TRAIN_SET_SUBFOLDER, create=True)
-
-        # remember to copy type map
-#        for name, obj in self.inputs.file.items():
-#            # if type.map, copy to the ./data
-#            if name == 'type_raw':
-#                dst_path = os.path.join(self._TRAIN_DATA_SUBFOLDER, obj.filename)
-#                local_copy_list.append((obj.uuid, obj.filename, dst_path))
-#            # copy other files to the ./data/set.000
-#            else:
-#                dst_path = os.path.join(self._TRAIN_SET_SUBFOLDER, obj.filename)
-#                local_copy_list.append((obj.uuid, obj.filename, dst_path))
-#refactor
-#        def create_array_from_files(files):
-#            for f in files:
-#                data_array = np.loadtxt(f)
-#                # function from aiida_ce
-#                pass
-#            return data_array
-
-        # create train set and store the data in
-#        box_data = np.loadtxt(self.inputs.file.box_raw)
-#        coord_data = np.loadtxt(self.inputs.file.coord_raw)
-
-
-        # for simplicity do not split the folder
-#        set_folder = folder.get_subfolder(os.path.join(self._TRAIN_DATA_SUBFOLDER, self._TRAIN_SET_PRFIX + str(n)), create=True)
-#        try:
-#            coord_data.dump("coord.npy")
-#        except ValueError as exc:
- #           raise InputValidationError("invalid keys or values in input parameters found")
 
         # settings = self.inputs.settings.get_dict() if 'settings' in self.inputs else {}
 
