@@ -91,6 +91,8 @@ class DpCalculation(CalcJob):
         local_copy_list = []
         for datadir in self.inputs.datadirs:
             # change to absolute path
+            if not os.path.exists(datadir):
+                raise FileExistsError("This datadir dose not exist")
             absdatadir = os.path.abspath(datadir)
             # create subfolder
             datadir_basename = os.path.basename(absdatadir)

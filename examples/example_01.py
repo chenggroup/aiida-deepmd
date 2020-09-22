@@ -39,12 +39,14 @@ def test_run(deepmd_code):
                     "../aiida_deepmd/tests/input_files/train_data2/"],
         'metadata': {
             'description': "Test job submission with the aiida_deepmd plugin",
-            'dry_run': True,
+            'dry_run': False,
             'options':{
                 'resources': {
-                    'tot_num_mpiprocs': 4
+                    'num_machines': 1,
+                    'tot_num_mpiprocs': 2
                 },
-                'queue_name': 'large'
+                'queue_name': 'gpu',
+                'custom_scheduler_commands': '#SBATCH --gres=gpu:1'
             }
         },
     }
