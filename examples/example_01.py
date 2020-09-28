@@ -39,7 +39,7 @@ def test_run(deepmd_code):
                     "../aiida_deepmd/tests/input_files/train_data2/"],
         'metadata': {
             'description': "Test job submission with the aiida_deepmd plugin",
-            'dry_run': False,
+            'dry_run': True,
             'options':{
                 'resources': {
                     'num_machines': 1,

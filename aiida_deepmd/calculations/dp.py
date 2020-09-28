@@ -14,6 +14,8 @@ from aiida.engine import CalcJob
 from aiida import orm
 from aiida.orm.nodes.data.singlefile import SinglefileData
 from aiida.common import CalcInfo, CodeInfo, InputValidationError
+from warnings import warn
+
 
 
 class DpCalculation(CalcJob):
@@ -79,6 +81,11 @@ class DpCalculation(CalcJob):
         input['learning_rate'] = self.inputs.learning_rate.get_dict()
         input['loss'] = self.inputs.loss.get_dict()
         input['training'] = self.inputs.training.get_dict()
+        # replace all the random seed
+        input['model']['descriptor']['seed'] = np.random.randint(100000000)
+        input['model']['fitting_net']['seed'] = np.random.randint(100000000)
+        input['training']['seed'] = np.random.randint(100000000)
+        warn("All seeds in user input will be automatically replaced by numpy.")
         json_str = json.dumps(input, indent=4, sort_keys=False)
 
         with io.open(folder.get_abs_path(self._DEFAULT_INPUT_FILE), mode="w", encoding="utf-8") as fobj:
